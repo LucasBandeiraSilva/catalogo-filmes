@@ -9,9 +9,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.film.catalog.film.controller.FilmeController;
 import com.film.catalog.film.dto.FilmeDto;
 import com.film.catalog.film.entidade.Filme;
 import com.film.catalog.film.repository.FilmeRepository;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
 @Service
 public class FilmeService {
@@ -20,12 +22,17 @@ public class FilmeService {
     private FilmeRepository filmeRepository;
 
     public ResponseEntity<List<Filme>> findAll() {
-        return ResponseEntity.ok().body(filmeRepository.findAll());
+        List<Filme> filmeList = filmeRepository.findAll();
+        for (Filme filme : filmeList) {
+            filme.add(linkTo(methodOn(FilmeController.class).findById(filme.getId())).withSelfRel());
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(filmeList);
     }
 
     public ResponseEntity<Filme> findById(Long id) {
         Optional<Filme> filme = filmeRepository.findById(id);
         if (filme.isPresent()) {
+            filme.get().add(linkTo(methodOn(FilmeController.class).findAll()).withRel("Lista de filmes disponiveis"));
             return ResponseEntity.ok().body(filme.get());
         }
         return ResponseEntity.notFound().build();

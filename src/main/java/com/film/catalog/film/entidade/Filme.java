@@ -1,5 +1,7 @@
 package com.film.catalog.film.entidade;
 
+import org.springframework.hateoas.RepresentationModel;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -16,7 +18,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Filme {
+public class Filme extends RepresentationModel<Filme> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
