@@ -5,6 +5,8 @@ import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -24,7 +26,8 @@ public class FilmeService {
     public ResponseEntity<List<Filme>> findAll() {
         List<Filme> filmeList = filmeRepository.findAll();
         for (Filme filme : filmeList) {
-            filme.add(linkTo(methodOn(FilmeController.class).findById(filme.getId())).withSelfRel());
+            Link uriFindCatalogoFilmeId = WebMvcLinkBuilder.linkTo(methodOn(FilmeController.class).findById(filme.getId())).withSelfRel();
+            filme.add(uriFindCatalogoFilmeId);
         }
         return ResponseEntity.status(HttpStatus.OK).body(filmeList);
     }
@@ -32,7 +35,8 @@ public class FilmeService {
     public ResponseEntity<Filme> findById(Long id) {
         Optional<Filme> filme = filmeRepository.findById(id);
         if (filme.isPresent()) {
-            filme.get().add(linkTo(methodOn(FilmeController.class).findAll()).withRel("Lista de filmes disponiveis"));
+            Link uri_catalogo_filmes = WebMvcLinkBuilder.linkTo(methodOn(FilmeController.class).findAll()).withRel("Lista de filmes disponiveis");
+            filme.get().add(uri_catalogo_filmes);
             return ResponseEntity.ok().body(filme.get());
         }
         return ResponseEntity.notFound().build();
