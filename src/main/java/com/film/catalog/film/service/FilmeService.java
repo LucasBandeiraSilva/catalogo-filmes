@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import com.film.catalog.film.controller.FilmeController;
 import com.film.catalog.film.dto.FilmeDto;
 import com.film.catalog.film.entidade.Filme;
+import com.film.catalog.film.exceptions.MovieNotFoundException;
 import com.film.catalog.film.repository.FilmeRepository;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
@@ -39,7 +40,7 @@ public class FilmeService {
             filme.get().add(uri_catalogo_filmes);
             return ResponseEntity.ok().body(filme.get());
         }
-        return ResponseEntity.notFound().build();
+        throw new MovieNotFoundException("Movie not found with the given id: " + id);
     }
 
     public ResponseEntity<Filme> createFilm(FilmeDto filmeDto) {
