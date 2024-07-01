@@ -2,7 +2,7 @@ package com.film.catalog.film.exceptions;
 
 public class IdNullException extends RuntimeException {
     public IdNullException(){
-        super("Id is null!");
+        super("O id está nulo");
     }
     public IdNullException(String mensage){
         super(mensage);

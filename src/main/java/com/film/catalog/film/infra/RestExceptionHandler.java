@@ -4,10 +4,12 @@ import java.time.Instant;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import com.film.catalog.film.exceptions.MovieListEmptyException;
 import com.film.catalog.film.exceptions.MovieNotCreatedException;
 import com.film.catalog.film.exceptions.MovieNotFoundException;
 import com.film.catalog.film.exceptions.StandartError;
@@ -24,16 +26,28 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         standartError.setStatus(HttpStatus.NOT_FOUND.value());
         standartError.setError("Movie not found");
         standartError.setMessage(exception.getMessage());
-        standartError.setPath("http://localhost:8080"+request.getRequestURI());
+        standartError.setPath(request.getRequestURI());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(standartError);
     }
-    public ResponseEntity<StandartError> movieNotCreatedHnadler(MovieNotCreatedException exception, HttpServletRequest request){
+    @ExceptionHandler(MovieNotCreatedException.class)
+    public ResponseEntity<StandartError> movieNotCreatedHnadler(MovieNotCreatedException exception, HttpServletRequest request,BindingResult bindingResult){
         StandartError standartError = new StandartError();
         standartError.setTimeStamp(Instant.now());
         standartError.setStatus(HttpStatus.NOT_FOUND.value());
         standartError.setError("Error adding a movie");
         standartError.setMessage(exception.getMessage());
-        standartError.setPath("http://localhost:8080"+request.getRequestURI());
+        standartError.setPath(request.getRequestURI());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(standartError);
+    }
+
+    @ExceptionHandler(MovieListEmptyException.class)
+    public ResponseEntity<StandartError> MovieListEmptyHandler(MovieNotCreatedException exception, HttpServletRequest request){
+        StandartError standartError = new StandartError();
+        standartError.setTimeStamp(Instant.now());
+        standartError.setStatus(HttpStatus.NOT_FOUND.value());
+        standartError.setError("Error adding a movie");
+        standartError.setMessage(exception.getMessage());
+        standartError.setPath(request.getRequestURI());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(standartError);
     }
 }

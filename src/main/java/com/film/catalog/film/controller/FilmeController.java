@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.film.catalog.film.dto.FilmeDto;
 import com.film.catalog.film.entidade.Filme;
 import com.film.catalog.film.service.FilmeService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/filme")
@@ -35,13 +38,13 @@ public class FilmeController {
     }
 
     @PostMapping()
-    public ResponseEntity<Filme> createFilm(@RequestBody FilmeDto filmeDto) {
-        return filmeService.createFilm(filmeDto);
+    public ResponseEntity<Filme> createFilm(@RequestBody @Valid FilmeDto filmeDto,BindingResult bindingResult) {
+        return filmeService.createFilm(filmeDto,bindingResult);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Filme> updateFilmById(@PathVariable Long id, @RequestBody FilmeDto filmeDto) {
-        return filmeService.updateFilmById(id, filmeDto);
+    public ResponseEntity<Filme> updateFilmById(@PathVariable Long id, @RequestBody @Valid FilmeDto filmeDto, BindingResult bindingResult) {
+        return filmeService.updateFilmById(id, filmeDto, bindingResult);
     }
 
     @DeleteMapping("/{id}")
